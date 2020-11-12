@@ -1,10 +1,14 @@
 <?
+	$phoneNumber = $_POST['phoneNumber'];
 	$metric = $_POST['metric'];
 	$value = $_POST['value'];
 	$longitude = $_POST['longitude'];
 	$latitude = $_POST['latiitude'];
 
 	$ts = time();
+
+	if (empty($phoneNumber))
+		$phoneNumber = "6612031768";
 
 	if (empty($latitude)) 
 		$latitude = 35.056990;
@@ -45,5 +49,28 @@
 		}
 
 		$addressArr = array('address' => $address, 'longitude' => $longitude, 'latitude' => $latitude);
+
+		$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'lastKnownLocation',],'ExpressionAttributeValues' => [':y' => ['S' => json_encode($addressArr),],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+
+		$json = json_encode([
+			'phoneNumber' => $phoneNumber,
+			'ts' => $ts,
+			'metric' => $metric,
+			'value' => $addressArr
+		]);
+
+		$params = [
+			'TableName' => 'actions',
+			'Item' => $marshaler->marshalJson($json)
+		];
+		
+		try 
+		{
+			$result = $ddb->putItem($params);
+    		} 
+		catch (DynamoDbException $e) 
+		{
+			echo $e->getMessage() . "\n";
+		}
 	}
 ?>
