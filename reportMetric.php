@@ -2,11 +2,11 @@
 	$phoneNumber = $_REQUEST['phoneNumber'];
 	$metric = $_REQUEST['metric'];
 	$value = $_REQUEST['value'];
-	$longitude = $_RRQUEST['longitude'];
-	$latitude = $_REQUEST['latiitude'];
+	$longitude = $_REQUEST['longitude'];
+	$latitude = $_REQUEST['latitude'];
 
 	$ts = time();
-/*
+
 	if (empty($phoneNumber))
 		$phoneNumber = "6612031768";
 
@@ -21,7 +21,7 @@
 
 	if (empty($value)) 
 		$value = "Location Changed";
- */
+ 
 	if ($metric == 'Location')
 	{
 		$url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyBPUUIC3mXSlfSNsATFSskmbGNMFliAjJ4";
@@ -56,7 +56,8 @@
 			'phoneNumber' => $phoneNumber,
 			'ts' => $ts,
 			'metric' => $metric,
-			'value' => $addressArr
+			'value' => $addressArr,
+			'addressResult' => json_encode($data)
 		]);
 
 		$params = [
@@ -98,5 +99,5 @@
 	}
 
 
-	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in',],'ExpressionAttributeValues' => [':y' => ['N' => $ts,],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+//	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in',],'ExpressionAttributeValues' => [':y' => ['N' => $ts,],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>
