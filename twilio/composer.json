@@ -1,0 +1,6 @@
+{
+    "name": "ubuntu/twilio",
+    "require": {
+        "twilio/sdk": "^6.12"
+    }
+}
