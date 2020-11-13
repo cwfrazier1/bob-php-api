@@ -1,12 +1,12 @@
 <?
-	$phoneNumber = $_POST['phoneNumber'];
-	$metric = $_POST['metric'];
-	$value = $_POST['value'];
-	$longitude = $_POST['longitude'];
-	$latitude = $_POST['latiitude'];
+	$phoneNumber = $_REQUEST['phoneNumber'];
+	$metric = $_REQUEST['metric'];
+	$value = $_REQUEST['value'];
+	$longitude = $_RRQUEST['longitude'];
+	$latitude = $_REQUEST['latiitude'];
 
 	$ts = time();
-
+/*
 	if (empty($phoneNumber))
 		$phoneNumber = "6612031768";
 
@@ -21,7 +21,7 @@
 
 	if (empty($value)) 
 		$value = "Location Changed";
-
+ */
 	if ($metric == 'Location')
 	{
 		$url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyBPUUIC3mXSlfSNsATFSskmbGNMFliAjJ4";
@@ -73,4 +73,30 @@
 			echo $e->getMessage() . "\n";
 		}
 	}
+	else
+	{
+		$json = json_encode([
+			'phoneNumber' => $phoneNumber,
+			'ts' => $ts,
+			'metric' => $metric,
+			'value' => $value
+		]);
+
+		$params = [
+			'TableName' => 'actions',
+			'Item' => $marshaler->marshalJson($json)
+		];
+		
+		try 
+		{
+			$result = $ddb->putItem($params);
+    		} 
+		catch (DynamoDbException $e) 
+		{
+			echo $e->getMessage() . "\n";
+		}
+	}
+
+
+	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in',],'ExpressionAttributeValues' => [':y' => ['N' => $ts,],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>
