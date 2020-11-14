@@ -96,5 +96,5 @@
 	}
 
 	$sleepAverage=round($sleepAverage/$sleepCount);
-	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'sleepAverage',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$sleepAverage,],],'Key' => ['phoneNumber' => ['S' => '6612031768',],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'sleepAverage',],'ExpressionAttributeValues' => [':y' => ['' => (string)$sleepAverage,],],'Key' => ['phoneNumber' => ['S' => '6612031768',],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>

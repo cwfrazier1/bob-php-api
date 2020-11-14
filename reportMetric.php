@@ -116,6 +116,28 @@
 		if (($ts - $lastWakAlert) > 36000) //10 hours
 			$send = true;
 
+		$metrics = array();
+		$checkinCount = 0;
+
+		$consecutive = $ddb->getIterator('Query', array('TableName' => 'actions','KeyConditions' => array('phoneNumber' => array('AttributeValueList' => array(array('S' => $account['phoneNumber'])),'ComparisonOperator' => 'EQ'),'ts' => array('AttributeValueList' => array(array('N' => $ts - 600)), 'ComparisonOperator' => 'GT'))));
+
+		foreach ($consecutive as $checkin) 
+		{
+			$dts=$icheckin['metric']['S'];
+			
+			if (!in_array($dts, $metrics))
+			{
+				$metrics[]=$dts;
+			}
+
+			$checkinCount++;
+		}
+
+		if (count($metrics) <= 1 || $checkinCount <= 4)
+		{
+			$send = false;
+		}
+
 		$difference = $sleepAverage * .15;
 		$upper = $sleepAverage + $difference;	
 		$lower = $sleepAverage - $difference;
