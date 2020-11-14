@@ -99,5 +99,41 @@
 	}
 
 
-//	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in',],'ExpressionAttributeValues' => [':y' => ['N' => $ts,],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+	$iterator = $ddb->getIterator('Query',array('TableName' => 'accounts','KeyConditions' => array('phoneNumber' => array('AttributeValueList' => array(array('S' => '6612031768')),'ComparisonOperator' => 'EQ'))));
+	$data=array();
+
+	foreach ($iterator as $item)
+	{
+		$sleepAverage = $item['sleepAverage']['N'];
+		$lastCheckedIn = $item['last_checked_in']['N'];
+		$lastWakeAlert = $item['last_wake_alert']['N'];
+
+		$send = false;
+
+		if (empty($lastWakeAlert))
+			$send = true;
+
+		if (($ts - $lastWakAlert) > 36000) //10 hours
+			$send = true;
+
+		$difference = $sleepAverage * .15;
+		$upper = $sleepAverage + $difference;	
+		$lower = $sleepAverage - $difference;
+
+		$timeout = $ts - $lastCheckedIn;
+		
+		if (between($timeout, $lower, $upper) && $send)
+		{
+
+			$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_wake_alert',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$ts,],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+			$number='6612031768';
+			$message='It appears as if Cee has awoken. Beware.';
+			include 'sendSms.php';
+			$number='6617474517';
+			include 'sendSms.php';
+		}
+
+	}
+
+	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$ts,],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>

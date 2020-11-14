@@ -25,12 +25,13 @@
 		$ts=$item['ts']['N'];
 		$ts=date('l, m/d/y h:i s a', $ts);
 		$metric = $item['metric']['S'];
-		$value = json_decode($item['value'], true);
+		$value = $item['value']['M'];
 
 		if ($metric == 'Location')
 		{
 			echo "$ts: $metric\n";
-			var_dump($value);
+			$address =($value['address']['S']);
+			echo $address;
 		}
 	}
 
