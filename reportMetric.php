@@ -1,5 +1,5 @@
 <?
-	$phoneNumber = $_REQUEST['phoneNumber'];
+	$id = $_REQUEST['id'];
 	$metric = $_REQUEST['metric'];
 	$value = $_REQUEST['value'];
 	$longitude = $_REQUEST['longitude'];
@@ -50,10 +50,10 @@
 
 		$addressArr = array('address' => $address, 'longitude' => $longitude, 'latitude' => $latitude);
 
-		$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'lastKnownLocation',],'ExpressionAttributeValues' => [':y' => ['S' => json_encode($addressArr),],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+		$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'lastKnownLocation',],'ExpressionAttributeValues' => [':y' => ['S' => json_encode($addressArr),],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 
 		$json = json_encode([
-			'phoneNumber' => $phoneNumber,
+			'id' => $id,
 			'ts' => $ts,
 			'metric' => $metric,
 			'value' => $addressArr,
@@ -77,7 +77,7 @@
 	else
 	{
 		$json = json_encode([
-			'phoneNumber' => $phoneNumber,
+			'id' => $id,
 			'ts' => $ts,
 			'metric' => $metric,
 			'value' => $value
@@ -99,7 +99,7 @@
 	}
 
 
-	$iterator = $ddb->getIterator('Query',array('TableName' => 'accounts','KeyConditions' => array('phoneNumber' => array('AttributeValueList' => array(array('S' => '6612031768')),'ComparisonOperator' => 'EQ'))));
+	$iterator = $ddb->getIterator('Query',array('TableName' => 'accounts','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $id)),'ComparisonOperator' => 'EQ'))));
 	$data=array();
 
 	foreach ($iterator as $item)
@@ -113,17 +113,17 @@
 		if (empty($lastWakeAlert))
 			$send = true;
 
-		if (($ts - $lastWakAlert) > 36000) //10 hours
+		if (($ts - $lastWakeAlert) > 36000) //10 hours
 			$send = true;
 
 		$metrics = array();
 		$checkinCount = 0;
 
-		$consecutive = $ddb->getIterator('Query', array('TableName' => 'actions','KeyConditions' => array('phoneNumber' => array('AttributeValueList' => array(array('S' => $account['phoneNumber'])),'ComparisonOperator' => 'EQ'),'ts' => array('AttributeValueList' => array(array('N' => $ts - 600)), 'ComparisonOperator' => 'GT'))));
+		$consecutive = $ddb->getIterator('Query', array('TableName' => 'actions','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $id)),'ComparisonOperator' => 'EQ'),'ts' => array('AttributeValueList' => array(array('N' => (string)($ts - 600))), 'ComparisonOperator' => 'GT'))));
 
 		foreach ($consecutive as $checkin) 
 		{
-			$dts=$icheckin['metric']['S'];
+			$dts=$checkin['metric']['S'];
 			
 			if (!in_array($dts, $metrics))
 			{
@@ -147,7 +147,7 @@
 		if (between($timeout, $lower, $upper) && $send)
 		{
 
-			$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_wake_alert',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$ts,],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+			$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_wake_alert',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$ts,],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 			$number='6612031768';
 			$message='It appears as if Cee has awoken. Beware.';
 			include 'sendSms.php';
@@ -157,5 +157,5 @@
 
 	}
 
-	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$ts,],],'Key' => ['phoneNumber' => ['S' => $phoneNumber,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$ts,],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>

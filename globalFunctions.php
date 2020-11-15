@@ -19,21 +19,35 @@
 	}
 /////C
 /////S
-	function sendSms($number, $message)
+	function sendSms($numbers, $message)
 	{	
-		$account_sid = 'ACc53fa684f8f23605aa3fefe40600b946';
-		$auth_token = 'c509253a8d8248f7d98adc26c050e198';
-		$twilio_number = "+14063447616";
-		$client = new Client($account_sid, $auth_token);
-		$client->messages->create(
-    			$number,
-			array(
-				'from' => $twilio_number,
-				'body' => $message
-			)
-		);
+		$url = 'https://api.checkonmine.com/sendSms.php';
+		$data = array('to' => serialize($numbers), 'message' => serialize($message));
+		$options = array('http' => array('header'  => "Content-type: application/x-www-form-urlencoded\r\n",'method'  => 'POST','content' => http_build_query($data)));
+		$context  = stream_context_create($options);
+		$result = file_get_contents($url, false, $context);
+		//if ($result === FALSE) 
+		//{ /* Handle error */ }
 	}
 /////S
+/////U
+	function uniqueId($lenght = 26) 
+	{
+		if (function_exists("random_bytes")) 
+		{
+			$bytes = random_bytes(ceil($lenght / 2));
+		} 
+		elseif (function_exists("openssl_random_pseudo_bytes")) 
+		{
+			$bytes = openssl_random_pseudo_bytes(ceil($lenght / 2));
+		} 
+		else 
+		{
+			throw new Exception("no cryptographically secure random function available");
+		}
+		return substr(bin2hex($bytes), 0, $lenght);
+	}	
+/////U
 //######################################FUNCTIONS############################################
 	
 //######################################AWS SETUP############################################
@@ -56,10 +70,5 @@
 	$ddb = $awsW->createDynamoDb();
 	$marshaler = new Marshaler();
 //######################################AWS SETUP############################################
-
-//####################################TWILIO  SETUP##########################################
-	require '/home/ubuntu/bob-php-api/twilio/vendor/autoload.php';
-	use Twilio\Rest\Client;
-//####################################TWILIO  SETUP##########################################
 
 ?>
