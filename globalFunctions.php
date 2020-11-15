@@ -22,7 +22,7 @@
 	function sendSms($numbers, $message)
 	{	
 		$url = 'https://api.checkonmine.com/sendSms.php';
-		$data = array('to' => serialize($numbers), 'message' => serialize($message));
+		$data = array('to' => $numbers, 'message' => serialize($message));
 		$options = array('http' => array('header'  => "Content-type: application/x-www-form-urlencoded\r\n",'method'  => 'POST','content' => http_build_query($data)));
 		$context  = stream_context_create($options);
 		$result = file_get_contents($url, false, $context);
