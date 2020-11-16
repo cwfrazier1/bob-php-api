@@ -34,7 +34,8 @@ try {
 		{
 			$verificationCode = rand(100000, 999999);
 			sendSms($phoneNumber, "Your verification code is $verificationCode");
-			echo "{'status' : 200, 'verificationCode' : $verificationCode}";
+			$data=array('status' => 200, 'verificationCode' => $verificationCode);
+			echo json_encode($data);
 		}
         }
 
