@@ -7,16 +7,7 @@ if (empty($phoneNumber))
 	$phoneNumber = '6614475919';
 
 if (empty($password)) 
-
 	$password = md5('krvg797C8T');
-
-$eav = $marshaler->marshalJson('
-    {
-        ":phoneNumber": "'.$phoneNumber.'",
-	":password": "'.$password.'"
-
-    }
-');
 
 $params = [
     'TableName' => 'accounts'

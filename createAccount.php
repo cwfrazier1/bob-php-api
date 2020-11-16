@@ -7,9 +7,9 @@
 			'phoneNumber' => '6614475919',
 			'ts' => $ts,
 			'firstName' => 'Chester',
-			'lastNamne' => 'Frazier',
+			'lastName' => 'Frazier',
 			'address' => '514 South Kern St',
-			'City' => 'Maricopa',
+			'city' => 'Maricopa',
 			'password' => md5('krvg797C8T'),
 			'emailAddress' => 'cwfrazier@cwfrazier.com',
 			'zipCode' => '93252'
