@@ -24,7 +24,9 @@ try {
 		if ($account['password'] == $password)
 		{
 			$verificationCode = rand(100000, 999999);
-			sendSms($phoneNumber, "Please enter the following code: $verificationCode");
+			$verificationCode = 999999;
+			
+			//sendSms($phoneNumber, "Please enter the following code: $verificationCode");
 			$data=array('status' => 200, 'verificationCode' => $verificationCode);
 			echo json_encode($data);
 		}
