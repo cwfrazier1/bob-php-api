@@ -2,17 +2,30 @@
 	$id = uniqueId();
 	$ts = time();
 
+	$phoneNumber = $_POST['phoneNumber'];
+	$firstName = $_POST['firstName'];
+	$lastName = $_POST['lastName'];
+	$address = $_POST['addresss'];
+	$addressLineTwo= $_POST['addressLineTwo'];
+	$city = $_POST['city'];
+	$state = $_POST['state'];
+	$zipCode = $_POST['zipCode'];
+	$emailAddress = $_POST['emailAddress'];
+	$password = $_POST['password'];
+	
 	$json = json_encode([
 			'id' => $id,
-			'phoneNumber' => '6614475919',
+			'phoneNumber' => $password,
 			'ts' => $ts,
-			'firstName' => 'Chester',
-			'lastName' => 'Frazier',
-			'address' => '514 South Kern St',
-			'city' => 'Maricopa',
-			'password' => md5('krvg797C8T'),
-			'emailAddress' => 'cwfrazier@cwfrazier.com',
-			'zipCode' => '93252'
+			'firstName' => $firstName,
+			'lastName' => $lastName,
+			'address' => $address,
+			'addressLineTwo' => $addressLineTwo,
+			'state' => $state,
+			'city' => $city,
+			'password' => md5($password),
+			'emailAddress' => $emailAddress,
+			'zipCode' => $zipCode
 		]);
 
 		$params = [
@@ -23,6 +36,11 @@
 		try 
 		{
 			$result = $ddb->putItem($params);
+
+			$verificationCode = rand(100000, 999999);
+			sendSms($phoneNumber, "Please enter the following code: $verificationCode");
+			$data=array('status' => 200, 'verificationCode' => $verificationCode);
+			echo json_encode($data);
     		} 
 		catch (DynamoDbException $e) 
 		{
