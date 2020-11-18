@@ -11,6 +11,8 @@
 	else
 		$timeFrame=(string)strtotime('-'.$argv[1].' days');
 
+	$id='';
+
 	use Aws\DynamoDb\Marshaler;
 
 	$marshaler = new Marshaler();
@@ -22,9 +24,9 @@
 			foreach ($result['Items'] as $i) 
 			{
 				$account = $marshaler->unmarshalItem($i);
-				//echo $account['id'];
+				$id = (string)$account['id'];
 
-				$iterator = $ddb->getIterator('Query', array('TableName' => 'actions','KeyConditions' => array('phoneNumber' => array('AttributeValueList' => array(array('S' => $account['phoneNumber'])),'ComparisonOperator' => 'EQ'),'ts' => array('AttributeValueList' => array(array('N' => $timeFrame)), 'ComparisonOperator' => 'GT'))));
+				$iterator = $ddb->getIterator('Query', array('TableName' => 'actions','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $id)),'ComparisonOperator' => 'EQ'),'ts' => array('AttributeValueList' => array(array('N' => $timeFrame)), 'ComparisonOperator' => 'GT'))));
 
 				foreach ($iterator as $item) 
 				{
@@ -82,7 +84,7 @@
 	{
 		if ($c['delay'] > $timeout)
 		{
-			//echo convertSeconds($c['delay'])." ".date('l, m/d/y h:i a', $c['begin']).' '.date('l, m/d/y h:i a', $c['end'])."\n";
+			echo convertSeconds($c['delay'])." ".date('l, m/d/y h:i a', $c['begin']).' '.date('l, m/d/y h:i a', $c['end'])."\n";
 			
 			$beginArr[]=date('H:i:s', $c['begin']);
 			$endArr[]=date('H:i:s', $c['end']);
@@ -96,5 +98,5 @@
 	}
 
 	$sleepAverage=round($sleepAverage/$sleepCount);
-	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'sleepAverage',],'ExpressionAttributeValues' => [':y' => ['' => (string)$sleepAverage,],],'Key' => ['phoneNumber' => ['S' => '6612031768',],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'sleepAverage',],'ExpressionAttributeValues' => [':y' => ['S' => (string)$sleepAverage,],],'Key' => ['id' => ['S' => '08244630d14164caaa2fedc85d',],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>

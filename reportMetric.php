@@ -148,7 +148,7 @@
 		{
 
 			$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_wake_alert',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$ts,],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
-			$number='6612031768';
+			$number='6614475919';
 			$message='It appears as if Cee has awoken. Beware.';
 			include 'sendSms.php';
 			$number='6617474517';
