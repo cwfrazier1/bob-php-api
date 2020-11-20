@@ -44,7 +44,7 @@ echo $user;
 			$monitorId = uniqueId();
 			$contact = array('id' => $monitorId, 'name' => $names, 'number' => $numbers, 'verified' => 0);
 			$emergencyContacts[] = $contact;
-			sendSms($numbers, "$user would like to add you as an emergency contact. Please click the following link to confirm: https://api.checkonmine.com?id=$id&m=$monitorId");
+			sendSms($numbers, "$user would like to add you as an emergency contact. Please click the following link to confirm: https://api.checkonmine.com/verifyEmergencyContact.php?userId=$id&mId=$monitorId");
 		}	
 		
 		$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'emergencyContacts',],'ExpressionAttributeValues' => [':y' => ['S' => json_encode($emergencyContacts),],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
