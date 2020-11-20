@@ -16,7 +16,7 @@
 		$emergencyContacts = json_decode($item['emergencyContacts']['S'], true);
 	}
 echo $user;
-	$names =$_POST['cpntactName'];
+	$names =$_POST['contactName'];
 	$numbers = $_POST['contactNumber'];
 
 	if (empty($names))
