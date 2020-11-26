@@ -4,7 +4,7 @@
 
 	$timeFrame='';
 
-	$timeout=(60*60)*4;
+	$timeout=(60*60)*2;
 
 	if (empty($argv[1]))
 		$timeFrame=(string)strtotime('-10 years');
@@ -54,7 +54,7 @@
 		if (!empty($ts[$i-1]) && !empty($ts[$i]))
 		{
 			$delay = $ts[$i-1] - $ts[$i];
-			//echo "$delay\n";
+			echo "$delay\n";
 			if ($delay > $max)
 			{
 				if ($delay < 9999990)
