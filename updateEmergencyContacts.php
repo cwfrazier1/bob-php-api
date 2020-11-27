@@ -14,8 +14,8 @@
 
 	while ($i < count($numbers))
 	{
-		$emergencyContacts[$i]['name'] = $names[$i];
-		$emergencyContacts[$i]['number'] = $numbers[$i];
+		$emergencyContacts[$i]['name'] = trim($names[$i]);
+		$emergencyContacts[$i]['number'] = trim($numbers[$i]);
 		$i++;
 	}
 
