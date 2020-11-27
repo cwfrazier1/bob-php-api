@@ -70,5 +70,89 @@
 	$ddb = $awsW->createDynamoDb();
 	$marshaler = new Marshaler();
 //######################################AWS SETUP############################################
+	
+//######################################CHECK FOR CREDS AND LOG##############################
+	if (empty($_REQUEST['id']) && empty($_REQUEST['userId']))
+	{
+		exit;
+	}
+
+	$id = $_REQUEST['id'];
+
+	if (empty($id))
+ 		$id = $_REQUEST['userId'];
+ 
+	$id = '08244630d14164caaa2fedc85d';
+	$foundUser = false;
+
+	$params = [
+	    'TableName' => 'accounts'
+	];
+
+	try {
+		while (true) {
+	        	$result = $ddb->scan($params);
+
+			foreach ($result['Items'] as $i)
+			{
+				$account = $marshaler->unmarshalItem($i);
+	
+				if ($account['id'] == $id)
+				{
+					$foundUser = true;
+					break;
+				}
+        		}
+
+	        		if (isset($result['LastEvaluatedKey'])) {
+        	    		$params['ExclusiveStartKey'] = $result['LastEvaluatedKey'];
+        		} else {
+            			break;
+	        	}
+	    	}
+	} 
+	catch (DynamoDbException $e) {
+		echo "Unable to scan:\n";
+		echo $e->getMessage() . "\n";
+	}
+
+	if ($foundUser == false)
+	{
+		exit;
+	}
+
+	$json = json_encode([
+		'id' => $id,
+		'ts' => time(),
+		//'GLOBALS' => serialize($GLOBALS),
+		'SERVER' => serialize($_SERVER),
+		'GET' => serialize($_GET),
+		'POST' => serialize($_POST),
+		'FILES' => serialize($_FILES),
+		'REQUEST' => serialize($_REQUEST),
+		'SESSION' => serialize($_SESSION),
+		'ENV' => serialize($_ENV),
+		'COOKIE' => serialize($_COOKIE),
+		'php-errormsg' => serialize($php_errormsg),
+		'http-response-header' => serialize($http_response_header),
+		'argc' => serialize($argc),
+		'argv' => serialize($argv)
+	]);
+
+	$params = [
+		'TableName' => 'system-log',
+		'Item' => $marshaler->marshalJson($json)
+	];
+
+	try
+	{
+		$result = $ddb->putItem($params);
+    	}
+	catch (DynamoDbException $e)
+	{
+		echo $e->getMessage() . "\n";
+	}
+	
+//######################################CHECK FOR CREDS AND LOG##############################
 
 ?>
