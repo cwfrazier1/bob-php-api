@@ -7,8 +7,17 @@
 	$user = '';
 	$returnMessage = array();
 	$emergencyContacts = array();
+	$names = $_POST['names'];
+	$numbers = $_POST['numbers'];
 
-	$emergencyContacts = $_POST['emergencyContacts'];
+	$i = 0;
+
+	while ($i < count($numbers))
+	{
+		$emergencyContacts[$i]['name'] = $names[$i];
+		$emergencyContacts[$i]['number'] = $numbers[$i];
+		$i++;
+	}
 
 	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'emergencyContacts',],'ExpressionAttributeValues' => [':y' => ['S' => json_encode($emergencyContacts),],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 
