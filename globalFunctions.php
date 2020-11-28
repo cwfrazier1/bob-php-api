@@ -18,11 +18,23 @@
  		return $dt1->diff($dt2)->format('%a days, %h hours, %i minutes and %s seconds');
 	}
 /////C
-/////S
-	function sendSms($numbers, $message)
+/////M
+	function makeCall($numbers, $message, $userId)
+	{	
+		$url = 'https://api.checkonmine.com/makeCall.php';
+		$data = array('to' => $numbers, 'message' => serialize($message), 'userId' => $userId);
+		$options = array('http' => array('header'  => "Content-type: application/x-www-form-urlencoded\r\n",'method'  => 'POST','content' => http_build_query($data)));
+		$context  = stream_context_create($options);
+		$result = file_get_contents($url, false, $context);
+		//if ($result === FALSE) 
+		//{ /* Handle error */ }
+	}
+////M
+////S
+	function sendSms($numbers, $message, $userId)
 	{	
 		$url = 'https://api.checkonmine.com/sendSms.php';
-		$data = array('to' => $numbers, 'message' => serialize($message));
+		$data = array('to' => $numbers, 'message' => serialize($message), 'userId' => $userId);
 		$options = array('http' => array('header'  => "Content-type: application/x-www-form-urlencoded\r\n",'method'  => 'POST','content' => http_build_query($data)));
 		$context  = stream_context_create($options);
 		$result = file_get_contents($url, false, $context);
@@ -82,7 +94,6 @@
 	if (empty($id))
  		$id = $_REQUEST['userId'];
  
-	$id = '08244630d14164caaa2fedc85d';
 	$foundUser = false;
 
 	$params = [
@@ -123,6 +134,7 @@
 
 	$json = json_encode([
 		'id' => $id,
+		'type' => 'web request',
 		'ts' => time(),
 		//'GLOBALS' => serialize($GLOBALS),
 		'SERVER' => serialize($_SERVER),

@@ -11,11 +11,18 @@
 	$number = $_POST['to'];
 	$message = unserialize($_POST['message']);
 
-	$twilioClient->messages->create($number,array('from' => $twilio_number,'body' => $message));
+	$call = $twilioClient->calls
+               ->create("+16614475919", // to
+                        "+14063447616", // from
+                        [
+                            "twiml" => "<Response><Say>$message</Say></Response>"
+                        ]
+               );
+	
 	$json = json_encode([
 		'id' => $id,
 		'ts' => time(),
-		'type' => 'sms',
+		'type' => 'phone call',
 		'to' => $number,
 		'message' => $message
 	]);

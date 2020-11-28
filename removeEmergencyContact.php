@@ -19,6 +19,7 @@ echo $user;
 	$contactIndex = $_POST['contactIndex'];
 
 	unset($emergencyContacts[$contactIndex - 1]);
+	$emergencyContacts = array_values($emergencyContacts);
 
 	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'emergencyContacts',],'ExpressionAttributeValues' => [':y' => ['S' => json_encode($emergencyContacts),],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>
