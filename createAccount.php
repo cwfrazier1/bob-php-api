@@ -5,7 +5,7 @@
 	$phoneNumber = $_POST['phoneNumber'];
 	$firstName = $_POST['firstName'];
 	$lastName = $_POST['lastName'];
-	$address = $_POST['addresss'];
+	$address = $_POST['address'];
 	$addressLineTwo= $_POST['addressLineTwo'];
 	$city = $_POST['city'];
 	$state = $_POST['state'];
@@ -15,7 +15,7 @@
 	
 	$json = json_encode([
 			'id' => $id,
-			'phoneNumber' => $password,
+			'phoneNumber' => $phoneNumber,
 			'ts' => $ts,
 			'firstName' => $firstName,
 			'lastName' => $lastName,
