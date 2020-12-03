@@ -30,6 +30,17 @@
 		//{ /* Handle error */ }
 	}
 ////M
+////N
+	function notify($userId, $type, $message, $subject=null)
+	{
+		$url = 'https://api.checkonmine.com/sendNotification.php';
+		$data = array('message' => serialize($message), 'userId' => $userId, 'type' => $type, 'subject' => $subject);
+		$options = array('http' => array('header'  => "Content-type: application/x-www-form-urlencoded\r\n",'method'  => 'POST','content' => http_build_query($data)));
+		$context  = stream_context_create($options);
+		$result = file_get_contents($url, false, $context);
+		
+	}
+////N
 ////S
 	function sendSms($numbers, $message, $userId)
 	{	
@@ -76,6 +87,7 @@
 	$ddb = $awsW->createDynamoDb();
 	$polly = new \Aws\Polly\PollyClient(['version' => 'latest', 'credentials' => $credentials, 'region' => 'us-east-1']);
 	$s3 = new Aws\S3\S3Client(['version' => 'latest', 'region' => 'us-west-1', 'credentials' => $credentials]);
+	$ses = new Aws\Ses\SesClient(['version' => 'latest', 'region' => 'us-west-1', 'credentials' => $credentials]);
 	$ec2 = new Aws\Ec2\Ec2Client(['version' => 'latest', 'region' => 'us-west-1', 'credentials' => $credentials]);
 	$pinpointClient = new Aws\Pinpoint\PinpointClient(['version' => 'latest', 'region' => 'us-west-2', 'credentials' => $credentials]);
 
