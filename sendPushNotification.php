@@ -1,20 +1,24 @@
-<?php
+<?
+require '/home/ubuntu/bob-php-api/twilio/vendor/autoload.php';
+use Twilio\Rest\Client;
 
-$apnsHost = 'gateway.sandbox.push.apple.com';
-$apnsCert = 'cred.p12';
-$apnsPort = 2195;
-$apnsPass = '';
-$token = 'a083a527ce10c4238c0558915d7a0e3141ab909e962e6d6c12aa2f468716a041';
+// Find your Account Sid and Auth Token at twilio.com/console
+// DANGER! This is insecure. See http://twil.io/secure
+$sid    = "ACc53fa684f8f23605aa3fefe40600b946";
+$token  = "c509253a8d8248f7d98adc26c050e198";
+$twilio = new Client($sid, $token);
 
-$payload['aps'] = array('alert' => 'Oh hai!', 'badge' => 1, 'sound' => 'default');
-$output = json_encode($payload);
-$token = pack('H*', str_replace(' ', '', $token));
-$apnsMessage = chr(0).chr(0).chr(32).$token.chr(0).chr(strlen($output)).$output;
+$id = "08244630d14164caaa2fedc85d";
 
-$streamContext = stream_context_create();
-stream_context_set_option($streamContext, 'ssl', 'local_cert', $apnsCert);
-stream_context_set_option($streamContext, 'ssl', 'passphrase', $apnsPass);
+$binding = $twilio->notify->v1->services("ISf73402a379262abe29795d43e8ff1830")->bindings->create($id, "apn", "a083a527ce10c4238c0558915d7a0e3141ab909e962e6d6c12aa2f468716a041");
+$notification = $twilio->notify->v1->services("ISf73402a379262abe29795d43e8ff1830")
+                                   ->notifications
+                                   ->create([
+                                                "body" => "Hello Bob",
+                                                "identity" => [$id]
+                                            ]
+                                   );
 
-$apns = stream_socket_client('ssl://'.$apnsHost.':'.$apnsPort, $error, $errorString, 2, STREAM_CLIENT_CONNECT, $streamContext);
-fwrite($apns, $apnsMessage);
-fclose($apns);
+print($notification->sid);
+print($binding->sid);
+

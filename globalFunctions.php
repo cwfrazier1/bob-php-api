@@ -84,7 +84,9 @@
 //######################################AWS SETUP############################################
 	
 //######################################CHECK FOR CREDS AND LOG##############################
-	if (empty($_REQUEST['id']) && empty($_REQUEST['userId']))
+	$debug = true;	
+
+	if (empty($_REQUEST['id']) && empty($_REQUEST['userId']) && $debug == false)
 	{
 		exit;
 	}
@@ -92,7 +94,10 @@
 	$id = $_REQUEST['id'];
 
 	if (empty($id))
- 		$id = $_REQUEST['userId'];
+		$id = $_REQUEST['userId'];
+
+	if (empty($id) && $debug == true)
+		$id = "08244630d14164caaa2fedc85d";
  
 	$foundUser = false;
 
