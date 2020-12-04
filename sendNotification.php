@@ -12,7 +12,7 @@ $iterator = $ddb->getIterator('Query',array('TableName' => 'accounts','KeyCondit
 
 	foreach ($iterator as $item)
 	{
-		$phoneNumber = $item['phoneNumber']['S'];
+		$phonenumber = $item['phonenumber']['s'];
 		$emailAddress = $item['emailAddress']['S'];
 		$iOSToken = $item['iOSToken']['S'];
 	}
