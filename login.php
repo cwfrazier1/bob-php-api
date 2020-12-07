@@ -23,6 +23,8 @@ try {
 
 		if ($account['password'] == $password)
 		{
+			$verificationCode = 0;
+
 			if ($account['phoneNumber'] != '1231231234')
 			{
 				$verificationCode = rand(100000, 999999);

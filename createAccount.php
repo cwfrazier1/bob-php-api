@@ -12,6 +12,7 @@
 	$zipCode = $_POST['zipCode'];
 	$emailAddress = $_POST['emailAddress'];
 	$password = $_POST['password'];
+	$newsletter = $_POST['newsletter'];
 	
 	$json = json_encode([
 			'id' => $id,
@@ -25,7 +26,8 @@
 			'city' => $city,
 			'password' => md5($password),
 			'emailAddress' => $emailAddress,
-			'zipCode' => $zipCode
+			'zipCode' => $zipCode,
+			'newsletter' => $newsletter
 		]);
 
 		$params = [
@@ -40,7 +42,7 @@
 			if ($phoneNumber != '1231231234')
 			{
 				$verificationCode = rand(100000, 999999);
-				sendSms($phoneNumber, "Please enter the following code: $verificationCode");
+				sendSms($phoneNumber, "Please enter the following code: $verificationCode", 'Hso9TMZVejesnBtD3Ixe');
 			}
 			else
 			{
