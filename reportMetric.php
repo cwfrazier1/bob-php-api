@@ -4,7 +4,8 @@
 	$value = $_REQUEST['value'];
 	$longitude = $_REQUEST['longitude'];
 	$latitude = $_REQUEST['latitude'];
-
+	$address = trim($_REQUEST['address']);
+	
 	$ts = time();
 
 	if (empty($phoneNumber))
@@ -24,32 +25,22 @@
  
 	if ($metric == 'Location')
 	{
-		$url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyBPUUIC3mXSlfSNsATFSskmbGNMFliAjJ4";
-
-		$json = @file_get_contents($url);
-		$data = json_decode($json);
-
-		$status = $data->status;
+		$lastKnownAddress = '';
+		$iterator = $ddb->getIterator('Query',array('TableName' => 'accounts','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $id)),'ComparisonOperator' => 'EQ'))));
 	
-		if($status=="OK") 
+		foreach ($iterator as $item)
 		{
-        		for ($j=0;$j<count($data->results[0]->address_components);$j++) 
-			{
-				$cn=array($data->results[0]->address_components[$j]->types[0]);
-			
-				if(in_array("locality", $cn)) 
-				{
-					$address = $data->results[0]->formatted_address;
-				}
-			}
-		} 
-		else
+			$lastKnownLocation = $item['lastKnownLocation']['S'];
+			$lastKnownAddress = $lastKnownLocation['address'];
+		}
+		
+		if ($lastKnownAddress['S'] == $address)
 		{
-		       	echo 'Location Not Found';
+			exit;
 		}
 
 		$addressArr = array('address' => $address, 'longitude' => $longitude, 'latitude' => $latitude);
-
+		
 		$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'lastKnownLocation',],'ExpressionAttributeValues' => [':y' => ['S' => json_encode($addressArr),],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 
 		$json = json_encode([

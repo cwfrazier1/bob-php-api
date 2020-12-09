@@ -1,10 +1,9 @@
-#!/usr/bin/php
 <?
 	use Aws\DynamoDb\Marshaler;
 
 	$marshaler = new Marshaler();
 	$id = '08244630d14164caaa2fedc85d';
-	$limit = 25;
+	$limit = 50;
 
 	$ts = (string)strtotime('-1 hour');
 
@@ -20,9 +19,16 @@
 		$tempArr['metric'] = $item['metric']['S'];
 		$tempArr['value'] = $item['value']['S'];
 
+		if ($tempArr['metric'] == 'Location')
+		{
+			$addressInfo = $item['value'];
+			$address = $addressInfo['M']['address'];
+			//var_dump($address);
+			$tempArr['value'] = $address['S'];
+		}
+
 		$actions[$i] = $tempArr;
 
-		var_dump($actions[$i]);
 		$i++;
 	}
 
@@ -30,7 +36,7 @@
 	$limitedArr = array();
 	$actionCount = count($actions);
 
-	while ($i <= $limit)
+	while ($i < $limit)
 	{
 		$limitedArr[$i] = $actions[$actionCount];
 
@@ -38,5 +44,6 @@
 		$i++;
 	}
 
+	unset($limitedArr[0]);
 	echo json_encode($limitedArr);
 ?>
