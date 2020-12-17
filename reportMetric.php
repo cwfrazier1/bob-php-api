@@ -27,36 +27,7 @@
 	{
 		$lastKnownAddress = '';
 		$iterator = $ddb->getIterator('Query',array('TableName' => 'accounts','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $id)),'ComparisonOperator' => 'EQ'))));
-
-		if (empty($address))
-		{
-			$url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=AIzaSyBPUUIC3mXSlfSNsATFSskmbGNMFliAjJ4";
-	 		$json = @file_get_contents($url);
- 			$data = json_decode($json);
-			$status = $data->status;
-
-			if($status=="OK")
-			{
-		 		foreach ($iterator as $item)
- 				{
-         				for ($j=0;$j<count($data->results[0]->address_components);$j++)
- 					{
- 						$cn=array($data->results[0]->address_components[$j]->types[0]);
-						if(in_array("locality", $cn))
- 						{
- 							$address = $data->results[0]->formatted_address;
- 						}
- 					}
- 				}
-			}
-		}
- 		else
- 			$lastKnownLocation = $item['lastKnownLocation']['S'];
- 			$lastKnownAddress = $lastKnownLocation['address'];
- 		}
-
-		}
-
+	
 		foreach ($iterator as $item)
 		{
 			$lastKnownLocation = $item['lastKnownLocation']['S'];
@@ -67,7 +38,6 @@
 		{
 			exit;
 		}
-
 
 		$addressArr = array('address' => $address, 'longitude' => $longitude, 'latitude' => $latitude);
 		

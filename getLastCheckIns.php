@@ -5,7 +5,7 @@
 	$id = '08244630d14164caaa2fedc85d';
 	$limit = 50;
 
-	$ts = (string)strtotime('-24 hours');
+	$ts = (string)strtotime('-1 hour');
 
 	$iterator = $ddb->getIterator('Query', array('TableName' => 'actions','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $id)),'ComparisonOperator' => 'EQ'),'ts' => array('AttributeValueList' => array(array('N' => $ts)), 'ComparisonOperator' => 'GT'))));
 
@@ -23,7 +23,7 @@
 		{
 			$addressInfo = $item['value'];
 			$address = $addressInfo['M']['address'];
-			//var_dump($itwm);
+			//var_dump($address);
 			$tempArr['value'] = $address['S'];
 		}
 
@@ -35,6 +35,9 @@
 	$i = 0;
 	$limitedArr = array();
 	$actionCount = count($actions);
+
+	if ($limit > $actionCount)
+		$limit = $actionCount;
 
 	while ($i < $limit)
 	{
