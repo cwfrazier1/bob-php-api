@@ -2,8 +2,8 @@
 	use Aws\DynamoDb\Marshaler;
 
 	$marshaler = new Marshaler();
-	$id = '08244630d14164caaa2fedc85d';
-	$limit = 50;
+	$id = $_REQUEST['id'];
+	$limit = 100;
 
 	$ts = (string)strtotime('-1 hour');
 
