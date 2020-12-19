@@ -2,6 +2,7 @@
     "require": {
         "aws/aws-sdk-php": "^3.160",
         "opencage/geocode": "^2.1",
-        "lcobucci/jwt": "^4.0"
+        "lcobucci/jwt": "^4.0",
+        "zendesk/zendesk_api_client_php": "^2.2"
     }
 }
