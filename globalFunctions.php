@@ -87,7 +87,7 @@
 	$ddb = $awsW->createDynamoDb();
 	$polly = new \Aws\Polly\PollyClient(['version' => 'latest', 'credentials' => $credentials, 'region' => 'us-east-1']);
 	$s3 = new Aws\S3\S3Client(['version' => 'latest', 'region' => 'us-west-1', 'credentials' => $credentials]);
-	$ses = new Aws\Ses\SesClient(['version' => 'latest', 'region' => 'us-west-1', 'credentials' => $credentials]);
+	$ses = new Aws\Ses\SesClient(['version' => 'latest', 'region' => 'us-west-2', 'credentials' => $credentials]);
 	$ec2 = new Aws\Ec2\Ec2Client(['version' => 'latest', 'region' => 'us-west-1', 'credentials' => $credentials]);
 	$pinpointClient = new Aws\Pinpoint\PinpointClient(['version' => 'latest', 'region' => 'us-west-2', 'credentials' => $credentials]);
 

@@ -1,5 +1,5 @@
 <?
-	$id = $_GET['id'];
+	$id = $_POST['id'];
 
 	$t = strval(time());
 
@@ -14,7 +14,12 @@
 
 	if ($delayedPanic == $t)
 	{
-		echo 'send alert';
+		$url = 'https://api.checkonmine.com/sendAlert.php';
+		$data = array('id' => $id);
+		$options = array('http' => array('header'  => "Content-type: application/x-www-form-urlencoded\r\n",'method'  => 'POST','content' => http_build_query($data)));
+		$context  = stream_context_create($options);
+		$result = file_get_contents($url, false, $context);
+		
 	}
 	else
 	{

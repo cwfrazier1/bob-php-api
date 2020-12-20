@@ -8,6 +8,14 @@ $message = unserialize($_POST['message']);
 $subject = $_POST['subject'];		
 $to = '';
 
+/*
+$userId = '4dde8b8afc173e9e1aa0edc9c2';		
+$type = 'email';	
+$message = 'message';
+$subject = 'subject';		
+$to = '';
+ */
+
 $iterator = $ddb->getIterator('Query',array('TableName' => 'accounts','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $userId)),'ComparisonOperator' => 'EQ'))));
 
 	foreach ($iterator as $item)
@@ -48,7 +56,7 @@ if ($type == 'email')
 
 	try 
 	{
-		$result = $ses->sendEmail(['Destination' => ['ToAddresses' => array($emailAddress),],'ReplyToAddresses' => ['no-reply@checkonmine.com'],'Source' => 'no-reply@checkonmine.com','Message' => ['Body' => ['Text' => ['Charset' => $char_set,'Data' => $message,],], 'Subject' => ['Charset' => $char_set,'Data' => $subject,],],]);
+		$result = $ses->sendEmail(['Destination' => ['ToAddresses' => array($emailAddress),],'ReplyToAddresses' => ['support@checkonmine.com'],'Source' => 'Check on Mine <support@checkonmine.com>','Message' => ['Body' => ['Text' => ['Charset' => $char_set,'Data' => $message,],], 'Subject' => ['Charset' => $char_set,'Data' => $subject,],],]);
 		$messageId = $result['MessageId'];
 	} 
 	catch (AwsException $e) 

@@ -12,10 +12,10 @@
 	$message = unserialize($_POST['message']);
 
 	$call = $twilioClient->calls
-               ->create("+16614475919", // to
+               ->create("+1$number", // to
                         "+14063447616", // from
                         [
-                            "twiml" => "<Response><Say>$message</Say></Response>"
+                            "twiml" => "<Response><Say loop=\"3\">$message</Say></Response>"
                         ]
                );
 	
