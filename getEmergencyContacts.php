@@ -1,5 +1,5 @@
 <?
-	$id = $_POST['userId'];
+	$id = $_POST['id'];
 
 	if (empty($id))
 		$id = '08244630d14164caaa2fedc85d';

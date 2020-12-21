@@ -36,6 +36,7 @@ try {
 			}
 			$data=array('status' => 200, 'verificationCode' => $verificationCode);
 			echo json_encode($data);
+			exit;
 		}
         }
 
