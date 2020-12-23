@@ -149,4 +149,6 @@
 	}
 
 	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in',],'ExpressionAttributeValues' => [':y' => ['N' => (string)$ts,],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in_metric',],'ExpressionAttributeValues' => [':y' => ['S' => $metric,],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
+	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'last_checked_in_metric_value',],'ExpressionAttributeValues' => [':y' => ['S' => $value,],],'Key' => ['id' => ['S' => $id,],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>
