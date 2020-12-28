@@ -44,7 +44,7 @@
 	$currentMedicalInsurance = $emergencyNotes->currentMedicalInsurance;
 	$specialNotes = $emergencyNotes->specialNotes;
 
-	$phoneMessage = "We have received an emergency alert from $firstName. Their last known address was $lastKnownLocationAddress. We have sent you additional information as a text message. Could you please check on them?";
+	$phoneMessage = "We have received an emergency alert from $firstName. We have sent you additional information as a text message. Could you please check on them?";
 
 	$textMessage = "We have received an emergency alert from $firstName. Their details are as follows. Could you please check on them?\n\nCurrent Residence: $address $addressLineTwo, $city, $state $zipCode\nLast Known Location: $lastKnownLocationAddress (https://maps.google.com/?q=$lastKnownLocationLattitude,$lastKnownLocationLongitude";
 
