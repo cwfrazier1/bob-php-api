@@ -1,7 +1,5 @@
 #!/usr/bin/php
 <?
-	$ts=array();
-
 	$timeFrame='';
 
 	$timeout=(60*60)*2;
@@ -23,17 +21,52 @@
 
 			foreach ($result['Items'] as $i) 
 			{
+				$ts=array();
+
 				$account = $marshaler->unmarshalItem($i);
+				
 				$id = (string)$account['id'];
+				$phoneNumber = (string)$account['phoneNumber'];
+				$iOSToken = (string)$account['iOSToken'];
+				$firstName = (string)$account['firstName'];
+				$lastCheckInAlert = (int)$account['lastCheckInAlert'];
+
+				echo "--------------------------------------------------------------------------\n";
+
+				echo $firstName;
 
 				$iterator = $ddb->getIterator('Query', array('TableName' => 'actions','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $id)),'ComparisonOperator' => 'EQ'),'ts' => array('AttributeValueList' => array(array('N' => $timeFrame)), 'ComparisonOperator' => 'GT'))));
+
+				$i=0;
 
 				foreach ($iterator as $item) 
 				{
 					$dts=$item['ts']['N'];
-					$ts[]=$dts;
-					
+					$ts[$i]=(int)$dts;
+					$i++;
 				}
+
+				$numOfCheckIn=count($ts);
+
+				sort($ts);
+
+				$lastCheckin = $ts[$numOfCheckIn-1];
+
+				$now = time() - $lastCheckin;
+
+				if ($now > 86400 && (empty($lastCheckInAlert) || (time() - $lastCheckInAlert > 86400)))
+				{
+					echo "\n+++SEND ALERT+++\n";
+					$id = '08244630d14164caaa2fedc85d'; //FOR TESTING
+					$message = "You have not checked in since ".date('m/d/y h:i a', $lastCheckin).". Please open the Check on Mine app to manually check in. For automatic check in options, please go to https://checkonmine.com/checkin-options";
+
+					sendSms($phoneNumber, $message, $id);	
+				}
+
+				echo "\nFirst check in: ".date('m/d/y h:i a', $ts[0]);
+				echo "\nLast check  in: ".date('m/d/y h:i a', $ts[$numOfCheckIn-1])."\n\n";
+
+				echo "--------------------------------------------------------------------------\n";
 
 			}
 	}
@@ -43,60 +76,4 @@
 		echo $e->getMessage() . "\n";
 	}
 
-	rsort($ts);
-	$c=count($ts);
-	$max=0;
-	$i=$c;
-	$checkins=array();
-
-	while ($i != 1)
-	{
-		if (!empty($ts[$i-1]) && !empty($ts[$i]))
-		{
-			$delay = $ts[$i-1] - $ts[$i];
-			echo "$delay\n";
-			if ($delay > $max)
-			{
-				if ($delay < 9999990)
-				{
-					$max = $delay;
-				}
-			}
-
-			$checkins[$i]['end']=$ts[$i-1];
-			$checkins[$i]['begin']=$ts[$i];
-			$checkins[$i]['delay']=$delay;
-		}
-		$i--;
-	}
-
-	//usort($checkins,'sortByTime');
-
-	$i=0;
-	$average=0;
-	$sleepAverage=0;
-	$sleepCount=0;
-	$beginArr=array();
-	$endArr=array();
-	$csv='';
-
-	foreach ($checkins as $c)
-	{
-		if ($c['delay'] > $timeout)
-		{
-			echo convertSeconds($c['delay'])." ".date('l, m/d/y h:i a', $c['begin']).' '.date('l, m/d/y h:i a', $c['end'])."\n";
-			
-			$beginArr[]=date('H:i:s', $c['begin']);
-			$endArr[]=date('H:i:s', $c['end']);
-			
-			$sleepAverage=$sleepAverage+$c['delay'];
-			$sleepCount++;
-		}
-
-		$average=$average+$c['delay'];
-		$i++;
-	}
-
-	$sleepAverage=round($sleepAverage/$sleepCount);
-	$result = $ddb->updateItem(['ExpressionAttributeNames' => ['#Y' => 'sleepAverage',],'ExpressionAttributeValues' => [':y' => ['S' => (string)$sleepAverage,],],'Key' => ['id' => ['S' => '08244630d14164caaa2fedc85d',],],'TableName' => 'accounts','UpdateExpression' => 'SET #Y = :y',]);
 ?>

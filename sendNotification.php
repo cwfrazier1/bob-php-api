@@ -8,13 +8,13 @@ $message = unserialize($_POST['message']);
 $subject = $_POST['subject'];		
 $to = '';
 
-/*
-$userId = '4dde8b8afc173e9e1aa0edc9c2';		
-$type = 'email';	
+$userId = '08244630d14164caaa2fedc85d8';		
+$type = 'sms';	
 $message = 'message';
 $subject = 'subject';		
 $to = '';
- */
+
+$iOSToken = '';
 
 $iterator = $ddb->getIterator('Query',array('TableName' => 'accounts','KeyConditions' => array('id' => array('AttributeValueList' => array(array('S' => $userId)),'ComparisonOperator' => 'EQ'))));
 
