@@ -81,7 +81,7 @@
 	use Aws\Pinpoint\PinpointClient;
 	use Aws\Exception\AwsException;
 
-	$credentials = new Aws\Credentials\Credentials('AKIAJEDLXJ5DWOADKCGA', '0A+FwZ0UB1f0NSN1iqhKeKlEPvGhq9f6fX3u4EqR');
+	$credentials = new Aws\Credentials\Credentials('AKIA47EUSXRZOBMJ5AOL', 'FV2a6MHIgxpZHqB+uWHp7aIFl1YbGWlYPm017rv0');
 	$awsW = new Aws\Sdk(['region' => 'us-west-1', 'version' => 'latest', 'credentials' => $credentials]);	
 	$awsE = new Aws\Sdk(['region' => 'us-east-1', 'version' => 'latest', 'credentials' => $credentials]);	
 	$ddb = $awsW->createDynamoDb();
